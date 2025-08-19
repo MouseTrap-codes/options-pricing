@@ -1,7 +1,7 @@
 from typing import Callable, Optional, cast
 
-import jax # type: ignore
-import jax.numpy as jnp # type: ignore
+import jax 
+import jax.numpy as jnp 
 import numpy as np
 
 from binomial_tree_utils import compute_u, compute_d, compute_probability

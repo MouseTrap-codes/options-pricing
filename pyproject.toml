@@ -15,6 +15,14 @@ dependencies = [
 ]
 
 [tool.poetry]
+name = "options-pricing"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [
+    { include = "src" }
+]
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.12.9"

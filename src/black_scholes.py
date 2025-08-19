@@ -1,7 +1,7 @@
 from typing import Dict
 
 import numpy as np
-from scipy.stats import norm # type: ignore
+from scipy.stats import norm
 
 
 def black_scholes_with_greeks(
