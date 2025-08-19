@@ -1,0 +1,483 @@
+{
+  "EUROPEAN_CALLS": [
+    {
+      "name": "Hull_classic_european_call",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 0.25,
+        "N": 100,
+        "S_t": 42.0,
+        "r": 0.1,
+        "K": 40.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 3.528325
+      }
+    },
+    {
+      "name": "ATM_european_call",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 1.0,
+        "N": 200,
+        "S_t": 100.0,
+        "r": 0.05,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 10.440278
+      }
+    },
+    {
+      "name": "Dividend_european_call",
+      "inputs": {
+        "sigma": 0.3,
+        "T": 0.5,
+        "N": 150,
+        "S_t": 50.0,
+        "r": 0.06,
+        "K": 50.0,
+        "q": 0.03,
+        "r_f": null,
+        "asset_type": "dividend",
+        "exercise_type": "european",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 4.493281
+      }
+    },
+    {
+      "name": "Currency_european_call",
+      "inputs": {
+        "sigma": 0.15,
+        "T": 1.0,
+        "N": 200,
+        "S_t": 1.25,
+        "r": 0.02,
+        "K": 1.2,
+        "q": null,
+        "r_f": 0.01,
+        "asset_type": "currency",
+        "exercise_type": "european",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 0.106872
+      }
+    },
+    {
+      "name": "Future_european_call",
+      "inputs": {
+        "sigma": 0.25,
+        "T": 0.75,
+        "N": 100,
+        "S_t": 2500.0,
+        "r": 0.03,
+        "K": 2400.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "future",
+        "exercise_type": "european",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 258.830686
+      }
+    },
+    {
+      "name": "High_vol_european_call",
+      "inputs": {
+        "sigma": 0.8,
+        "T": 1.0,
+        "N": 250,
+        "S_t": 100.0,
+        "r": 0.05,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 32.787157
+      }
+    },
+    {
+      "name": "Short_term_european_call",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 0.019230769230769232,
+        "N": 50,
+        "S_t": 100.0,
+        "r": 0.01,
+        "K": 102.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 0.397799
+      }
+    },
+    {
+      "name": "Deep_ITM_european_call",
+      "inputs": {
+        "sigma": 0.25,
+        "T": 2.0,
+        "N": 300,
+        "S_t": 150.0,
+        "r": 0.04,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 59.283608
+      }
+    },
+    {
+      "name": "Low_vol_dividend_european_call",
+      "inputs": {
+        "sigma": 0.1,
+        "T": 1.0,
+        "N": 200,
+        "S_t": 100.0,
+        "r": 0.03,
+        "K": 95.0,
+        "q": 0.02,
+        "r_f": null,
+        "asset_type": "dividend",
+        "exercise_type": "european",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 7.39966
+      }
+    },
+    {
+      "name": "Negative_rate_european_call",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 1.0,
+        "N": 150,
+        "S_t": 100.0,
+        "r": -0.005,
+        "K": 95.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 10.265907
+      }
+    }
+  ],
+  "EUROPEAN_PUTS": [
+    {
+      "name": "McDonald_european_put",
+      "inputs": {
+        "sigma": 0.25,
+        "T": 0.25,
+        "N": 100,
+        "S_t": 40.0,
+        "r": 0.05,
+        "K": 45.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 5.028305
+      }
+    },
+    {
+      "name": "ATM_european_put",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 1.0,
+        "N": 200,
+        "S_t": 100.0,
+        "r": 0.05,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 5.563712
+      }
+    },
+    {
+      "name": "Dividend_european_put",
+      "inputs": {
+        "sigma": 0.3,
+        "T": 0.5,
+        "N": 150,
+        "S_t": 50.0,
+        "r": 0.06,
+        "K": 50.0,
+        "q": 0.03,
+        "r_f": null,
+        "asset_type": "dividend",
+        "exercise_type": "european",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 3.761952
+      }
+    },
+    {
+      "name": "Currency_european_put",
+      "inputs": {
+        "sigma": 0.12,
+        "T": 0.5,
+        "N": 100,
+        "S_t": 1.15,
+        "r": 0.025,
+        "K": 1.2,
+        "q": null,
+        "r_f": 0.015,
+        "asset_type": "currency",
+        "exercise_type": "european",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 0.065044
+      }
+    },
+    {
+      "name": "Future_european_put",
+      "inputs": {
+        "sigma": 0.35,
+        "T": 0.5,
+        "N": 100,
+        "S_t": 2200.0,
+        "r": 0.02,
+        "K": 2300.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "future",
+        "exercise_type": "european",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 271.954622
+      }
+    },
+    {
+      "name": "Deep_ITM_european_put",
+      "inputs": {
+        "sigma": 0.3,
+        "T": 1.5,
+        "N": 250,
+        "S_t": 80.0,
+        "r": 0.03,
+        "K": 120.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 37.728427
+      }
+    },
+    {
+      "name": "High_dividend_european_put",
+      "inputs": {
+        "sigma": 0.25,
+        "T": 1.0,
+        "N": 200,
+        "S_t": 100.0,
+        "r": 0.04,
+        "K": 100.0,
+        "q": 0.08,
+        "r_f": null,
+        "asset_type": "dividend",
+        "exercise_type": "european",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 11.361388
+      }
+    },
+    {
+      "name": "Short_term_european_put",
+      "inputs": {
+        "sigma": 0.4,
+        "T": 0.08333333333333333,
+        "N": 30,
+        "S_t": 100.0,
+        "r": 0.02,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 4.449109
+      }
+    },
+    {
+      "name": "Very_low_vol_european_put",
+      "inputs": {
+        "sigma": 0.05,
+        "T": 1.0,
+        "N": 150,
+        "S_t": 95.0,
+        "r": 0.03,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 3.107165
+      }
+    },
+    {
+      "name": "Long_term_OTM_european_put",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 3.0,
+        "N": 500,
+        "S_t": 120.0,
+        "r": 0.04,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 3.736863
+      }
+    }
+  ],
+  "EUROPEAN_EDGE_CASES": [
+    {
+      "name": "Min_time_steps_european",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 0.25,
+        "N": 1,
+        "S_t": 100.0,
+        "r": 0.05,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 4.152384
+      }
+    },
+    {
+      "name": "Very_short_expiry_european",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 0.0027397260273972603,
+        "N": 10,
+        "S_t": 100.0,
+        "r": 0.05,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 0.400494
+      }
+    },
+    {
+      "name": "High_time_steps_european",
+      "inputs": {
+        "sigma": 0.25,
+        "T": 1.0,
+        "N": 1000,
+        "S_t": 100.0,
+        "r": 0.03,
+        "K": 105.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 9.120734
+      }
+    },
+    {
+      "name": "Zero_interest_rate_european",
+      "inputs": {
+        "sigma": 0.3,
+        "T": 1.0,
+        "N": 100,
+        "S_t": 100.0,
+        "r": 0.0,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 11.89358
+      }
+    },
+    {
+      "name": "Very_high_volatility_european",
+      "inputs": {
+        "sigma": 2.0,
+        "T": 1.0,
+        "N": 200,
+        "S_t": 100.0,
+        "r": 0.05,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "european",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 68.710303
+      }
+    }
+  ]
+}

@@ -3,21 +3,26 @@ from typing import Callable, Optional, cast
 import jax
 import jax.numpy as jnp
 import numpy as np
+from jax import config as jax_config
 
 from .binomial_tree_utils import compute_d, compute_probability, compute_u
+
+jax_config.update("jax_enable_x64", True)
 
 
 def _dp_kernel_py(
     S_t: float,
     K: float,
-    N: int,
     u: float,
     d: float,
     p: float,
     disc: float,
     is_call: int,
     is_amer: int,
+    *,
+    N: int,
 ) -> jnp.ndarray:
+    N = int(N)
     j = jnp.arange(N + 1, dtype=jnp.float64)
 
     # stable stock prices at maturity: S = S0 * d^N * (u/d)^j
@@ -52,13 +57,38 @@ def _dp_kernel_py(
 
         return (V_layer, S_layer)
 
-    V_final, _ = jax.lax.fori_loop(0, N, bellman_like_equation, (V, S))
+    def body(i: int, carry: tuple[jnp.ndarray, jnp.ndarray]):
+        V_layer, S_layer = carry
+        # Values for all "prefix" nodes of this layer (length N)
+        cont_all = disc * (p * V_layer[1:] + (1.0 - p) * V_layer[:-1])  # (N,)
+        S_prev_all = S_layer[:-1] / d  # (N,)
+        intrinsic_all = jnp.maximum(
+            jnp.where(is_call == 1, S_prev_all - K, K - S_prev_all), 0.0
+        )  # (N,)
+        step_vals = jnp.where(
+            is_amer == 1, jnp.maximum(cont_all, intrinsic_all), cont_all
+        )
+
+        # Only first k = N - i entries are active at this step
+        k = N - i
+        mask = jnp.arange(N, dtype=jnp.int32) < k  # (N,)
+
+        # Update V_layer and S_layer using static slices with masked values
+        new_V_prefix = jnp.where(mask, step_vals, V_layer[:-1])  # (N,)
+        V_layer = V_layer.at[:-1].set(new_V_prefix)
+
+        new_S_prefix = jnp.where(mask, S_prev_all, S_layer[:-1])  # (N,)
+        S_layer = S_layer.at[:-1].set(new_S_prefix)
+
+        return V_layer, S_layer
+
+    V_final, _ = jax.lax.fori_loop(0, N, body, (V, S))
 
     return V_final[0]
 
 
 _dp_kernel: Callable[..., jnp.ndarray] = cast(
-    Callable[..., jnp.ndarray], jax.jit(_dp_kernel_py)
+    Callable[..., jnp.ndarray], jax.jit(_dp_kernel_py, static_argnames=("N",))
 )
 
 
@@ -93,12 +123,12 @@ def dp_binomial_tree(
         _dp_kernel(
             float(S_t),
             float(K),
-            int(N),
             float(u),
             float(d),
             float(p),
             float(discount_rate),
             int(is_call),
             int(is_amer),
+            N=int(N),
         )
     )
