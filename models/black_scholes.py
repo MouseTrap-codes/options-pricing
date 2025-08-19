@@ -15,6 +15,9 @@ def black_scholes_with_greeks(
 ) -> Dict[str, float]:
     option = option_type.lower()
 
+    if S_t <= 0 or K <= 0:
+        raise ValueError("S_t and K must be postive")
+
     if T <= 0.0 or sigma <= 0.0:
         price = max(0.0, S_t - K) if option == "call" else max(0.0, K - S_t)
         return {

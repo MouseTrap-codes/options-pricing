@@ -1,6 +1,9 @@
+from typing import Optional
+
 import numpy as np
 
-from binomial_tree_utils import compute_u, compute_d, compute_probability
+from .binomial_tree_utils import compute_d, compute_probability, compute_u
+
 
 def compute_f(fu_next: float, fd_next: float, p: float, r: float, dt: float) -> float:
     return float(((p * fu_next) + ((1 - p) * fd_next)) * np.exp(-r * dt))

@@ -1,10 +1,11 @@
 from typing import Callable, Optional, cast
 
-import jax 
-import jax.numpy as jnp 
+import jax
+import jax.numpy as jnp
 import numpy as np
 
-from binomial_tree_utils import compute_u, compute_d, compute_probability
+from .binomial_tree_utils import compute_d, compute_probability, compute_u
+
 
 def _dp_kernel_py(
     S_t: float,

@@ -1,0 +1,646 @@
+{
+  "CALL_CASES": [
+    {
+      "name": "Hull_call_classic",
+      "inputs": {
+        "S_t": 42.0,
+        "K": 40.0,
+        "T": 0.5,
+        "r": 0.1,
+        "sigma": 0.2,
+        "q": 0.0,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 4.759422,
+        "Delta": 0.779131,
+        "Gamma": 0.049963,
+        "Vega": 0.088134,
+        "Theta": -0.012491,
+        "Rho": 0.13982
+      }
+    },
+    {
+      "name": "ATM_call_baseline",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 100.0,
+        "T": 1.0,
+        "r": 0.05,
+        "sigma": 0.2,
+        "q": 0.0,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 10.450584,
+        "Delta": 0.636831,
+        "Gamma": 0.018762,
+        "Vega": 0.37524,
+        "Theta": -0.017573,
+        "Rho": 0.532325
+      }
+    },
+    {
+      "name": "Dividend_ATM_call",
+      "inputs": {
+        "S_t": 50.0,
+        "K": 50.0,
+        "T": 0.5,
+        "r": 0.06,
+        "sigma": 0.3,
+        "q": 0.03,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 4.506591,
+        "Delta": 0.56167,
+        "Gamma": 0.036478,
+        "Vega": 0.136793,
+        "Theta": -0.012811,
+        "Rho": 0.117884
+      }
+    },
+    {
+      "name": "Deep_ITM_call_long_T",
+      "inputs": {
+        "S_t": 150.0,
+        "K": 100.0,
+        "T": 2.0,
+        "r": 0.02,
+        "sigma": 0.25,
+        "q": 0.0,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 56.001495,
+        "Delta": 0.924604,
+        "Gamma": 0.00268,
+        "Vega": 0.301491,
+        "Theta": -0.009693,
+        "Rho": 1.653783
+      }
+    },
+    {
+      "name": "Short_maturity_call_OTM",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 105.0,
+        "T": 0.08333333333333333,
+        "r": 0.01,
+        "sigma": 0.15,
+        "q": 0.0,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 0.299801,
+        "Delta": 0.138769,
+        "Gamma": 0.051094,
+        "Vega": 0.063868,
+        "Theta": -0.01612,
+        "Rho": 0.011314
+      }
+    },
+    {
+      "name": "High_vol_call_with_q",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 100.0,
+        "T": 1.0,
+        "r": 0.03,
+        "sigma": 0.35,
+        "q": 0.05,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 12.408748,
+        "Delta": 0.520236,
+        "Gamma": 0.010767,
+        "Vega": 0.376859,
+        "Theta": -0.014198,
+        "Rho": 0.396149
+      }
+    },
+    {
+      "name": "Low_rate_call",
+      "inputs": {
+        "S_t": 120.0,
+        "K": 110.0,
+        "T": 0.75,
+        "r": 0.005,
+        "sigma": 0.18,
+        "q": 0.0,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 13.509975,
+        "Delta": 0.74543,
+        "Gamma": 0.017151,
+        "Vega": 0.333413,
+        "Theta": -0.012002,
+        "Rho": 0.569562
+      }
+    },
+    {
+      "name": "Neg_rate_call",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 90.0,
+        "T": 1.5,
+        "r": -0.01,
+        "sigma": 0.22,
+        "q": 0.0,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 15.141113,
+        "Delta": 0.680852,
+        "Gamma": 0.013257,
+        "Vega": 0.437493,
+        "Theta": -0.007339,
+        "Rho": 0.794161
+      }
+    },
+    {
+      "name": "Near_expiry_call_ATM",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 100.0,
+        "T": 0.0027397260273972603,
+        "r": 0.01,
+        "sigma": 0.3,
+        "q": 0.0,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 0.627804,
+        "Delta": 0.503828,
+        "Gamma": 0.254048,
+        "Vega": 0.020881,
+        "Theta": -0.314573,
+        "Rho": 0.001363
+      }
+    },
+    {
+      "name": "Near_expiry_call_ITM",
+      "inputs": {
+        "S_t": 105.0,
+        "K": 100.0,
+        "T": 0.0027397260273972603,
+        "r": 0.01,
+        "sigma": 0.3,
+        "q": 0.0,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 5.003156,
+        "Delta": 0.999086,
+        "Gamma": 0.001881,
+        "Vega": 0.00017,
+        "Theta": -0.005294,
+        "Rho": 0.002737
+      }
+    },
+    {
+      "name": "Near_expiry_call_OTM",
+      "inputs": {
+        "S_t": 95.0,
+        "K": 100.0,
+        "T": 0.0027397260273972603,
+        "r": 0.01,
+        "sigma": 0.3,
+        "q": 0.0,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 0.000223,
+        "Delta": 0.000563,
+        "Gamma": 0.00133,
+        "Vega": 9.9e-05,
+        "Theta": -0.001481,
+        "Rho": 1e-06
+      }
+    },
+    {
+      "name": "Very_high_vol_call",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 100.0,
+        "T": 1.0,
+        "r": 0.02,
+        "sigma": 1.0,
+        "q": 0.0,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 38.910409,
+        "Delta": 0.698468,
+        "Gamma": 0.003485,
+        "Vega": 0.348493,
+        "Theta": -0.049434,
+        "Rho": 0.309364
+      }
+    },
+    {
+      "name": "Deep_OTM_long_call",
+      "inputs": {
+        "S_t": 50.0,
+        "K": 150.0,
+        "T": 3.0,
+        "r": 0.02,
+        "sigma": 0.3,
+        "q": 0.0,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 0.362238,
+        "Delta": 0.041017,
+        "Gamma": 0.003385,
+        "Vega": 0.076166,
+        "Theta": -0.001136,
+        "Rho": 0.050659
+      }
+    },
+    {
+      "name": "High_dividend_call",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 100.0,
+        "T": 0.75,
+        "r": 0.03,
+        "sigma": 0.25,
+        "q": 0.1,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 5.952069,
+        "Delta": 0.414338,
+        "Gamma": 0.016942,
+        "Vega": 0.317655,
+        "Theta": -0.006069,
+        "Rho": 0.266113
+      }
+    },
+    {
+      "name": "Zero_rates_call",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 90.0,
+        "T": 0.5,
+        "r": 0.0,
+        "sigma": 0.2,
+        "q": 0.0,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 11.772451,
+        "Delta": 0.79267,
+        "Gamma": 0.020226,
+        "Vega": 0.202258,
+        "Theta": -0.011083,
+        "Rho": 0.337473
+      }
+    },
+    {
+      "name": "Low_vol_ATM_call",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 100.0,
+        "T": 1.0,
+        "r": 0.03,
+        "sigma": 0.05,
+        "q": 0.0,
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 3.786114,
+        "Delta": 0.734014,
+        "Gamma": 0.065632,
+        "Vega": 0.328161,
+        "Theta": -0.007969,
+        "Rho": 0.696153
+      }
+    }
+  ],
+  "PUT_CASES": [
+    {
+      "name": "ATM_put_baseline",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 100.0,
+        "T": 1.0,
+        "r": 0.05,
+        "sigma": 0.2,
+        "q": 0.0,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 5.573526,
+        "Delta": -0.363169,
+        "Gamma": 0.018762,
+        "Vega": 0.37524,
+        "Theta": -0.004542,
+        "Rho": -0.418905
+      }
+    },
+    {
+      "name": "McDonald_like_put",
+      "inputs": {
+        "S_t": 40.0,
+        "K": 45.0,
+        "T": 0.25,
+        "r": 0.05,
+        "sigma": 0.25,
+        "q": 0.0,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 5.027995,
+        "Delta": -0.782235,
+        "Gamma": 0.058872,
+        "Vega": 0.058872,
+        "Theta": -0.00309,
+        "Rho": -0.090794
+      }
+    },
+    {
+      "name": "Dividend_ATM_put",
+      "inputs": {
+        "S_t": 50.0,
+        "K": 50.0,
+        "T": 0.5,
+        "r": 0.06,
+        "sigma": 0.3,
+        "q": 0.03,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 3.773271,
+        "Delta": -0.423442,
+        "Gamma": 0.036478,
+        "Vega": 0.136793,
+        "Theta": -0.008883,
+        "Rho": -0.124727
+      }
+    },
+    {
+      "name": "Deep_ITM_put_long_T",
+      "inputs": {
+        "S_t": 80.0,
+        "K": 100.0,
+        "T": 2.0,
+        "r": 0.01,
+        "sigma": 0.25,
+        "q": 0.0,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 23.476917,
+        "Delta": -0.654611,
+        "Gamma": 0.013032,
+        "Vega": 0.417016,
+        "Theta": -0.005063,
+        "Rho": -1.516916
+      }
+    },
+    {
+      "name": "Short_maturity_put_ITM",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 105.0,
+        "T": 0.08333333333333333,
+        "r": 0.01,
+        "sigma": 0.15,
+        "q": 0.0,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 5.212337,
+        "Delta": -0.861231,
+        "Gamma": 0.051094,
+        "Vega": 0.063868,
+        "Theta": -0.013246,
+        "Rho": -0.076113
+      }
+    },
+    {
+      "name": "OTM_put",
+      "inputs": {
+        "S_t": 120.0,
+        "K": 100.0,
+        "T": 0.5,
+        "r": 0.02,
+        "sigma": 0.2,
+        "q": 0.0,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 0.61593,
+        "Delta": -0.076268,
+        "Gamma": 0.008448,
+        "Vega": 0.121658,
+        "Theta": -0.006131,
+        "Rho": -0.048841
+      }
+    },
+    {
+      "name": "High_dividend_put",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 100.0,
+        "T": 1.0,
+        "r": 0.03,
+        "sigma": 0.25,
+        "q": 0.06,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 11.013079,
+        "Delta": -0.469004,
+        "Gamma": 0.015028,
+        "Vega": 0.375705,
+        "Theta": -0.015816,
+        "Rho": -0.579135
+      }
+    },
+    {
+      "name": "Neg_rate_put",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 110.0,
+        "T": 1.5,
+        "r": -0.01,
+        "sigma": 0.22,
+        "q": 0.0,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 18.103559,
+        "Delta": -0.608218,
+        "Gamma": 0.014258,
+        "Vega": 0.470514,
+        "Theta": -0.011616,
+        "Rho": -1.18388
+      }
+    },
+    {
+      "name": "Near_expiry_put_ATM",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 100.0,
+        "T": 0.0027397260273972603,
+        "r": 0.01,
+        "sigma": 0.3,
+        "q": 0.0,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 0.625064,
+        "Delta": -0.496172,
+        "Gamma": 0.254048,
+        "Vega": 0.020881,
+        "Theta": -0.311833,
+        "Rho": -0.001376
+      }
+    },
+    {
+      "name": "Near_expiry_put_ITM",
+      "inputs": {
+        "S_t": 95.0,
+        "K": 100.0,
+        "T": 0.0027397260273972603,
+        "r": 0.01,
+        "sigma": 0.3,
+        "q": 0.0,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 4.997483,
+        "Delta": -0.999437,
+        "Gamma": 0.00133,
+        "Vega": 9.9e-05,
+        "Theta": 0.001258,
+        "Rho": -0.002738
+      }
+    },
+    {
+      "name": "Near_expiry_put_OTM",
+      "inputs": {
+        "S_t": 105.0,
+        "K": 100.0,
+        "T": 0.0027397260273972603,
+        "r": 0.01,
+        "sigma": 0.3,
+        "q": 0.0,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 0.000416,
+        "Delta": -0.000914,
+        "Gamma": 0.001881,
+        "Vega": 0.00017,
+        "Theta": -0.002554,
+        "Rho": -3e-06
+      }
+    },
+    {
+      "name": "Very_high_vol_put",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 100.0,
+        "T": 1.0,
+        "r": 0.02,
+        "sigma": 1.0,
+        "q": 0.0,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 36.930276,
+        "Delta": -0.301532,
+        "Gamma": 0.003485,
+        "Vega": 0.348493,
+        "Theta": -0.044063,
+        "Rho": -0.670835
+      }
+    },
+    {
+      "name": "Deep_OTM_put_long",
+      "inputs": {
+        "S_t": 150.0,
+        "K": 50.0,
+        "T": 3.0,
+        "r": 0.02,
+        "sigma": 0.3,
+        "q": 0.0,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 0.190745,
+        "Delta": -0.006395,
+        "Gamma": 0.000231,
+        "Vega": 0.046742,
+        "Theta": -0.000577,
+        "Rho": -0.0345
+      }
+    },
+    {
+      "name": "High_dividend_put_shortT",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 90.0,
+        "T": 0.75,
+        "r": 0.03,
+        "sigma": 0.25,
+        "q": 0.08,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 5.14365,
+        "Delta": -0.317023,
+        "Gamma": 0.015877,
+        "Vega": 0.297694,
+        "Theta": -0.017513,
+        "Rho": -0.276345
+      }
+    },
+    {
+      "name": "Zero_rates_put",
+      "inputs": {
+        "S_t": 90.0,
+        "K": 100.0,
+        "T": 0.5,
+        "r": 0.0,
+        "sigma": 0.2,
+        "q": 0.0,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 11.772451,
+        "Delta": -0.74994,
+        "Gamma": 0.02497,
+        "Vega": 0.202258,
+        "Theta": -0.011083,
+        "Rho": -0.396335
+      }
+    },
+    {
+      "name": "Low_vol_ATM_put",
+      "inputs": {
+        "S_t": 100.0,
+        "K": 100.0,
+        "T": 1.0,
+        "r": 0.03,
+        "sigma": 0.05,
+        "q": 0.0,
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 0.830668,
+        "Delta": -0.265986,
+        "Gamma": 0.065632,
+        "Vega": 0.328161,
+        "Theta": 7e-06,
+        "Rho": -0.274292
+      }
+    }
+  ]
+}
