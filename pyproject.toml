@@ -24,6 +24,9 @@ packages = [
     { include = "models" }
 ]
 
+[tool.poetry.scripts]
+generate-test-cases = "test_case_generation.generate_test_cases:main"
+
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.12.9"
 mypy = "^1.17.1"

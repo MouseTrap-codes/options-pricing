@@ -1,5 +1,7 @@
 from typing import Optional
+
 import numpy as np
+
 
 def compute_u(sigma: float, dt: float) -> float:
     return float(np.exp(sigma * np.sqrt(dt)))

@@ -6,28 +6,21 @@ import pytest
 
 from models import black_scholes_with_greeks
 
-DEFAULT_TOL = {
-    "Price": {"rel": 1e-8, "abs": 6e-7},
-    "Delta": {"rel": 1e-8, "abs": 6e-7},
-    "Gamma": {"rel": 1e-8, "abs": 6e-7},
-    "Vega": {"rel": 1e-8, "abs": 6e-7},
-    "Theta": {"rel": 1e-7, "abs": 6e-7},
-    "Rho": {"rel": 1e-8, "abs": 6e-7},
-}
+from .tolerances import BSM_TOL
 
 
-def load_cases():
-    path = Path(__file__).parent / "data" / "bs_cases.json"
+def load_test_cases():
+    path = Path(__file__).parent / "data" / "bs_test_cases.json"
     with path.open("r", encoding="utf-8") as f:
         payload = json.load(f)
     return payload["CALL_CASES"] + payload["PUT_CASES"]
 
 
-@pytest.mark.parametrize("case", load_cases(), ids=lambda c: c["name"])
-def test_black_scholes_cases(case):
-    got = black_scholes_with_greeks(**case["inputs"])
-    for k, exp in case["expected"].items():
-        tol = DEFAULT_TOL[k]
+@pytest.mark.parametrize("test_case", load_test_cases(), ids=lambda c: c["name"])
+def test_black_scholes_test_cases(test_case):
+    got = black_scholes_with_greeks(**test_case["inputs"])
+    for k, exp in test_case["expected"].items():
+        tol = BSM_TOL[k]
         assert got[k] == pytest.approx(exp, rel=tol["rel"], abs=tol["abs"])
 
 

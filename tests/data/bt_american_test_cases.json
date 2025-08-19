@@ -1,0 +1,483 @@
+{
+  "AMERICAN_CALLS": [
+    {
+      "name": "Hull_classic_american_call",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 0.25,
+        "N": 100,
+        "S_t": 42.0,
+        "r": 0.1,
+        "K": 40.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 3.528325
+      }
+    },
+    {
+      "name": "ATM_american_call",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 1.0,
+        "N": 200,
+        "S_t": 100.0,
+        "r": 0.05,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 10.440278
+      }
+    },
+    {
+      "name": "Dividend_american_call",
+      "inputs": {
+        "sigma": 0.3,
+        "T": 0.5,
+        "N": 150,
+        "S_t": 50.0,
+        "r": 0.06,
+        "K": 50.0,
+        "q": 0.03,
+        "r_f": null,
+        "asset_type": "dividend",
+        "exercise_type": "american",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 4.493284
+      }
+    },
+    {
+      "name": "Currency_american_call",
+      "inputs": {
+        "sigma": 0.15,
+        "T": 1.0,
+        "N": 200,
+        "S_t": 1.25,
+        "r": 0.02,
+        "K": 1.2,
+        "q": null,
+        "r_f": 0.01,
+        "asset_type": "currency",
+        "exercise_type": "american",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 0.106872
+      }
+    },
+    {
+      "name": "Future_american_call",
+      "inputs": {
+        "sigma": 0.25,
+        "T": 0.75,
+        "N": 100,
+        "S_t": 2500.0,
+        "r": 0.03,
+        "K": 2400.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "future",
+        "exercise_type": "american",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 260.154193
+      }
+    },
+    {
+      "name": "High_vol_american_call",
+      "inputs": {
+        "sigma": 0.8,
+        "T": 1.0,
+        "N": 250,
+        "S_t": 100.0,
+        "r": 0.05,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 32.787157
+      }
+    },
+    {
+      "name": "Short_term_american_call",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 0.019230769230769232,
+        "N": 50,
+        "S_t": 100.0,
+        "r": 0.01,
+        "K": 102.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 0.397799
+      }
+    },
+    {
+      "name": "Deep_ITM_american_call",
+      "inputs": {
+        "sigma": 0.25,
+        "T": 2.0,
+        "N": 300,
+        "S_t": 150.0,
+        "r": 0.04,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 59.283608
+      }
+    },
+    {
+      "name": "Low_vol_dividend_american_call",
+      "inputs": {
+        "sigma": 0.1,
+        "T": 1.0,
+        "N": 200,
+        "S_t": 100.0,
+        "r": 0.03,
+        "K": 95.0,
+        "q": 0.02,
+        "r_f": null,
+        "asset_type": "dividend",
+        "exercise_type": "american",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 7.399662
+      }
+    },
+    {
+      "name": "Negative_rate_american_call",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 1.0,
+        "N": 150,
+        "S_t": 100.0,
+        "r": -0.005,
+        "K": 95.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 10.301393
+      }
+    }
+  ],
+  "AMERICAN_PUTS": [
+    {
+      "name": "McDonald_american_put",
+      "inputs": {
+        "sigma": 0.25,
+        "T": 0.25,
+        "N": 100,
+        "S_t": 40.0,
+        "r": 0.05,
+        "K": 45.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 5.220109
+      }
+    },
+    {
+      "name": "ATM_american_put",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 1.0,
+        "N": 200,
+        "S_t": 100.0,
+        "r": 0.05,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 6.086515
+      }
+    },
+    {
+      "name": "Dividend_american_put",
+      "inputs": {
+        "sigma": 0.3,
+        "T": 0.5,
+        "N": 150,
+        "S_t": 50.0,
+        "r": 0.06,
+        "K": 50.0,
+        "q": 0.03,
+        "r_f": null,
+        "asset_type": "dividend",
+        "exercise_type": "american",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 3.842593
+      }
+    },
+    {
+      "name": "Currency_american_put",
+      "inputs": {
+        "sigma": 0.12,
+        "T": 0.5,
+        "N": 100,
+        "S_t": 1.15,
+        "r": 0.025,
+        "K": 1.2,
+        "q": null,
+        "r_f": 0.015,
+        "asset_type": "currency",
+        "exercise_type": "american",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 0.06619
+      }
+    },
+    {
+      "name": "Future_american_put",
+      "inputs": {
+        "sigma": 0.35,
+        "T": 0.5,
+        "N": 100,
+        "S_t": 2200.0,
+        "r": 0.02,
+        "K": 2300.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "future",
+        "exercise_type": "american",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 272.48863
+      }
+    },
+    {
+      "name": "Deep_ITM_american_put",
+      "inputs": {
+        "sigma": 0.3,
+        "T": 1.5,
+        "N": 250,
+        "S_t": 80.0,
+        "r": 0.03,
+        "K": 120.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 40.376226
+      }
+    },
+    {
+      "name": "High_dividend_american_put",
+      "inputs": {
+        "sigma": 0.25,
+        "T": 1.0,
+        "N": 200,
+        "S_t": 100.0,
+        "r": 0.04,
+        "K": 100.0,
+        "q": 0.08,
+        "r_f": null,
+        "asset_type": "dividend",
+        "exercise_type": "american",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 11.361601
+      }
+    },
+    {
+      "name": "Short_term_american_put",
+      "inputs": {
+        "sigma": 0.4,
+        "T": 0.08333333333333333,
+        "N": 30,
+        "S_t": 100.0,
+        "r": 0.02,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 4.462485
+      }
+    },
+    {
+      "name": "Very_low_vol_american_put",
+      "inputs": {
+        "sigma": 0.05,
+        "T": 1.0,
+        "N": 150,
+        "S_t": 95.0,
+        "r": 0.03,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 5.0
+      }
+    },
+    {
+      "name": "Long_term_OTM_american_put",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 3.0,
+        "N": 500,
+        "S_t": 120.0,
+        "r": 0.04,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 4.207098
+      }
+    }
+  ],
+  "AMERICAN_EDGE_CASES": [
+    {
+      "name": "Min_time_steps_american",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 0.25,
+        "N": 1,
+        "S_t": 100.0,
+        "r": 0.05,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 4.152384
+      }
+    },
+    {
+      "name": "Very_short_expiry_american",
+      "inputs": {
+        "sigma": 0.2,
+        "T": 0.0027397260273972603,
+        "N": 10,
+        "S_t": 100.0,
+        "r": 0.05,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "put"
+      },
+      "expected": {
+        "Price": 0.402166
+      }
+    },
+    {
+      "name": "High_time_steps_american",
+      "inputs": {
+        "sigma": 0.25,
+        "T": 1.0,
+        "N": 1000,
+        "S_t": 100.0,
+        "r": 0.03,
+        "K": 105.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 9.120734
+      }
+    },
+    {
+      "name": "Zero_interest_rate_american",
+      "inputs": {
+        "sigma": 0.3,
+        "T": 1.0,
+        "N": 100,
+        "S_t": 100.0,
+        "r": 0.0,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 11.893596
+      }
+    },
+    {
+      "name": "Very_high_volatility_american",
+      "inputs": {
+        "sigma": 2.0,
+        "T": 1.0,
+        "N": 200,
+        "S_t": 100.0,
+        "r": 0.05,
+        "K": 100.0,
+        "q": null,
+        "r_f": null,
+        "asset_type": "nondividend",
+        "exercise_type": "american",
+        "option_type": "call"
+      },
+      "expected": {
+        "Price": 68.726842
+      }
+    }
+  ]
+}
