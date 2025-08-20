@@ -32,7 +32,7 @@ def _dp_kernel_py(
     V_put = jnp.maximum(K - S, 0.0)
     V = jnp.where(is_call == 1, V_call, V_put)
 
-    # like Bellman equations in RL!
+    # like Bellman equations in RL! -> look at comment below for logic
     def bellman_like_equation(
         i: int, carry: tuple[jnp.ndarray, jnp.ndarray]
     ) -> tuple[jnp.ndarray, jnp.ndarray]:
@@ -57,28 +57,32 @@ def _dp_kernel_py(
 
         return (V_layer, S_layer)
 
+    # had to rewrite to make it work with jax
     def body(i: int, carry: tuple[jnp.ndarray, jnp.ndarray]):
         V_layer, S_layer = carry
-        # Values for all "prefix" nodes of this layer (length N)
-        cont_all = disc * (p * V_layer[1:] + (1.0 - p) * V_layer[:-1])  # (N,)
-        S_prev_all = S_layer[:-1] / d  # (N,)
-        intrinsic_all = jnp.maximum(
-            jnp.where(is_call == 1, S_prev_all - K, K - S_prev_all), 0.0
-        )  # (N,)
-        step_vals = jnp.where(
-            is_amer == 1, jnp.maximum(cont_all, intrinsic_all), cont_all
-        )
+        k = N - i  # number of active nodes in this layer
 
-        # Only first k = N - i entries are active at this step
-        k = N - i
-        mask = jnp.arange(N, dtype=jnp.int32) < k  # (N,)
+        # compute continuation values for current layer
+        cont = disc * (p * V_layer[1:] + (1.0 - p) * V_layer[:-1])  # shape (N,)
 
-        # Update V_layer and S_layer using static slices with masked values
-        new_V_prefix = jnp.where(mask, step_vals, V_layer[:-1])  # (N,)
-        V_layer = V_layer.at[:-1].set(new_V_prefix)
+        # move underlying prices back one layer
+        S_prev = S_layer[:-1] / d  # shape (N,)
 
-        new_S_prefix = jnp.where(mask, S_prev_all, S_layer[:-1])  # (N,)
-        S_layer = S_layer.at[:-1].set(new_S_prefix)
+        # compute intrinsic values
+        intrinsic = jnp.where(is_call == 1, S_prev - K, K - S_prev)
+        intrinsic = jnp.maximum(intrinsic, 0.0)
+
+        # American-style early exercise check
+        new_V = jnp.where(
+            is_amer == 1, jnp.maximum(cont, intrinsic), cont
+        )  # shape (N,)
+
+        # mask to preserve shape and only update first k entries
+        mask = jnp.arange(N, dtype=jnp.int32) < k
+
+        # shape-safe masked updates (only affect the first k entries)
+        V_layer = V_layer.at[:-1].set(jnp.where(mask, new_V, V_layer[:-1]))
+        S_layer = S_layer.at[:-1].set(jnp.where(mask, S_prev, S_layer[:-1]))
 
         return V_layer, S_layer
 
@@ -108,6 +112,9 @@ def dp_binomial_tree(
 ) -> float:
     if N <= 0:
         raise ValueError("Cannot have 0 or lower time periods")
+
+    if (not (S_t >= 0)) or (not (K >= 0)):
+        raise ValueError("Cannot have negative underlying or strike price.")
 
     dt = T / N
     u = compute_u(sigma, dt)

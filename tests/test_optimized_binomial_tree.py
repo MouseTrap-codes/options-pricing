@@ -1,15 +1,15 @@
 import json
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 from models import dp_binomial_tree
-
-from .tolerances import BT_AMER_TOL_OVERRIDES, BT_EURO_TOL_OVERRIDES, BT_TOL_EURO
+from tests.tolerances import BT_AMER_TOL_OVERRIDES, BT_EURO_TOL_OVERRIDES, BT_TOL_EURO
 
 
 def _load_bt_euro_test_cases():
-    path = Path(__file__).parent / "data" / "bt_european_test_test_cases.json"
+    path = Path(__file__).parent / "data" / "bt_european_test_cases.json"
     with path.open("r", encoding="utf-8") as f:
         payload = json.load(f)
 
@@ -21,7 +21,7 @@ def _load_bt_euro_test_cases():
 
 
 def _load_bt_amer_test_cases():
-    path = Path(__file__).parent / "data" / "bt_american_test_test_cases.json"
+    path = Path(__file__).parent / "data" / "bt_american_test_cases.json"
     with path.open("r", encoding="utf-8") as f:
         payload = json.load(f)
 
@@ -94,3 +94,59 @@ def test_invalid_steps_raises():
             exercise_type="european",
             option_type="call",
         )
+
+
+# inputs and outputs for comparisons
+hull_params = {
+    "inputs": {
+        "S_t": 42.0,  # current stock price
+        "K": 40.0,  # strike price
+        "T": 0.25,  # 3 months = 0.25 years
+        "r": 0.10,  # 10% risk-free rate
+        "sigma": 0.20,  # 20% volatility
+        "q": 0.0,  # no dividends
+        "option_type": "call",
+        "N": 100,
+    },
+    "expected": {
+        "Price": 4.759,  # Hull's textbook value
+    },
+}
+
+
+def test_invalid_inputs():
+    # invalid option type
+    with pytest.raises(ValueError):
+        dp_binomial_tree(0, 0, 0, 0, 0, 0, option_type="invalid")
+
+    # negative underlying price
+    with pytest.raises(ValueError):
+        dp_binomial_tree(-100, 0, 0, 0, 0, 0, option_type="call")
+
+    # negative strike
+    with pytest.raises(ValueError):
+        dp_binomial_tree(0, -100, 0, 0, 0, 0, option_type="call")
+
+
+# using example params from Hull's "Options, Futures, and Other Derivatives" -> highly recommend
+def test_mathematical_properties():
+    S_t = hull_params["inputs"]["S_t"]
+    K = hull_params["inputs"]["K"]
+    T = hull_params["inputs"]["T"]
+    r = hull_params["inputs"]["r"]
+    sigma = hull_params["inputs"]["sigma"]
+    q = hull_params["inputs"]["q"]
+    N = hull_params["inputs"]["N"]
+
+    call = dp_binomial_tree(
+        S_t=S_t, K=K, T=T, r=r, sigma=sigma, q=q, option_type="call", N=N
+    )
+
+    put = dp_binomial_tree(
+        S_t=S_t, K=K, T=T, r=r, sigma=sigma, q=q, option_type="put", N=N
+    )
+
+    # put-call parity 0> C - P = S * e^(-q*T) - K*e^(-r*T)
+    expected_parity = S_t * np.exp(-q * T) - K * np.exp(-r * T)
+    actual_parity = call - put
+    assert abs(actual_parity - expected_parity) < 1e-10

@@ -171,6 +171,10 @@ def recursive_binomial_tree(
 ) -> float:
     if N <= 0:
         raise ValueError("Cannot have 0 or lower time periods")
+
+    if (not (S_t >= 0)) or (not (K >= 0)):
+        raise ValueError("Cannot have negative underlying or strike price.")
+
     dt = T / N
     u = compute_u(sigma, dt)
     d = compute_d(sigma, dt)

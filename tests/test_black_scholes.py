@@ -5,12 +5,11 @@ import numpy as np
 import pytest
 
 from models import black_scholes_with_greeks
-
-from .tolerances import BSM_TOL
+from tests.tolerances import BSM_TOL
 
 
 def load_test_cases():
-    path = Path(__file__).parent / "data" / "bs_test_cases.json"
+    path = Path(__file__).parent / "data" / "bs_cases.json"
     with path.open("r", encoding="utf-8") as f:
         payload = json.load(f)
     return payload["CALL_CASES"] + payload["PUT_CASES"]
