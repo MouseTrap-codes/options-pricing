@@ -3,9 +3,9 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from tolerances import BT_AMER_TOL_OVERRIDES, BT_EURO_TOL_OVERRIDES, BT_TOL_EURO
 
 from models import dp_binomial_tree
+from tests.tolerances import BT_AMER_TOL_OVERRIDES, BT_EURO_TOL_OVERRIDES, BT_TOL_EURO
 
 
 def _load_bt_euro_test_cases():
