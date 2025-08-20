@@ -3,9 +3,9 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+from tolerances import BSM_TOL
 
 from models import black_scholes_with_greeks
-from tests.tolerances import BSM_TOL
 
 
 def load_test_cases():
