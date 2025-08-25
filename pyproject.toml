@@ -18,6 +18,7 @@ dependencies = [
     "plotly (>=6.3.0,<7.0.0)",
     "streamlit (>=1.48.1,<2.0.0)",
     "watchdog (>=6.0.0,<7.0.0)",
+    "yfinance (>=0.2.65,<0.3.0)",
 ]
 
 [tool.poetry]

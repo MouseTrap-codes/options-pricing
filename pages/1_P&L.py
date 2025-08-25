@@ -1,4 +1,7 @@
+from datetime import datetime
+
 import streamlit as st
+import yfinance as yf
 
 from models import black_scholes_with_greeks, dp_binomial_tree
 from pnl_helpers import display_pnl
@@ -26,6 +29,10 @@ else:
     allowed_exercise = ["european", "american"]
     allowed_assets = ["nondividend", "dividend", "currency", "future"]
 
+# part 0: live option chains
+st.subheader("Live Option Chain Data (Optional)")
+use_live = st.checkbox("Use Live Market Data")
+
 # shared Inputs
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -46,6 +53,51 @@ with col3:
     contract_multiplier = st.number_input(
         "Contract Multiplier", min_value=1, value=100, step=1
     )
+
+if use_live:
+    ticker = st.text_input("Enter Stock Ticker (i.e. AAPL)", value="AAPL")
+    if ticker:
+        try:
+            stock = yf.Ticker(ticker)
+            S_t = stock.history(period="1d")["Close"].iloc[-1]
+
+            # show expiration dates
+            try:
+                expirations = stock.options
+            except Exception as e:
+                st.error(f"Could not fetch option expirations: {e}")
+                expirations = []
+            expiry_str = str(
+                st.selectbox(
+                    "Choose Expiration Date",
+                    expirations,
+                    index=0 if expirations else None,
+                )
+            )
+            expiry_date = datetime.strptime(expiry_str, "%Y-%m-%d")
+            T = (expiry_date - datetime.now()).days / 365
+
+            # fetch option chain
+            chain = stock.option_chain(expiry_str)
+            df = (
+                chain.calls
+                if st.radio("Option Type", ["call", "put"]) == "call"
+                else chain.puts
+            )
+
+            K = st.selectbox("Select Strike Price (K)", sorted(df["strike"].tolist()))
+        except Exception as e:
+            st.error(f"Error fetching data for {ticker}: {e}")
+
+sigma = st.number_input("Volatility (σ)", value=0.2, step=0.01)
+r = st.number_input("Risk-Free Rate (r)", value=0.05, step=0.01)
+
+number_of_contracts = st.number_input(
+    "Number of Contracts", min_value=1, value=1, step=1
+)
+contract_multiplier = st.number_input(
+    "Contract Multiplier", min_value=1, value=100, step=1
+)
 
 # additional fields depending on asset type
 q = r_f = None
@@ -74,6 +126,7 @@ if st.button("Compute Option Price"):
             elif exercise_type != "european":
                 st.warning("Black-Scholes only supports **European-style** options.")
             else:
+                K = float(K) if K is not None else 100.0  # fallback default
                 result = black_scholes_with_greeks(
                     S_t=S_t,
                     K=K,
@@ -95,6 +148,7 @@ if st.button("Compute Option Price"):
                     contract_multiplier=contract_multiplier,
                 )
         else:
+            K = float(K) if K is not None else 100.0  # fallback default
             price = dp_binomial_tree(
                 S_t=S_t,
                 K=K,
