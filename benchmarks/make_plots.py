@@ -1,7 +1,8 @@
 from pathlib import Path
 
 import plotly.express as px
-from validate_data import create_df
+
+from .validate_data import create_df
 
 file_path = Path(__file__).parent / "results.csv"
 benchmarks = create_df(str(file_path))
@@ -17,7 +18,7 @@ fig_speed_linear = px.line(
     markers=True,
 )
 fig_speed_linear.update_layout(yaxis_title="Time (µs)", legend_title="Method")
-fig_speed_linear.show()
+# fig_speed_linear.show()
 
 fig_speed_log = px.line(
     benchmarks_to_compare,
@@ -28,7 +29,7 @@ fig_speed_log = px.line(
     log_y=True,
 )
 fig_speed_log.update_layout(yaxis_title="Time (µs)", legend_title="Method")
-fig_speed_log.show()
+# fig_speed_log.show()
 
 # compare memory
 fig_mem_linear = px.line(
@@ -42,7 +43,7 @@ fig_mem_linear = px.line(
     markers=True,
 )
 fig_mem_linear.update_layout(yaxis_title="Memory (MiB))", legend_title="Method")
-fig_mem_linear.show()
+# fig_mem_linear.show()
 
 # just the optimized dp version for up to 10k timesteps
 fig_optimized_speed = px.line(
@@ -53,7 +54,7 @@ fig_optimized_speed = px.line(
     markers=True,
 )
 fig_optimized_speed.update_layout(yaxis_title="Time (µs)", legend_title="Method")
-fig_optimized_speed.show()
+# fig_optimized_speed.show()
 
 fig_optimized_speed_log = px.line(
     benchmarks,
@@ -64,7 +65,7 @@ fig_optimized_speed_log = px.line(
     log_y=True,
 )
 fig_optimized_speed_log.update_layout(yaxis_title="Time (µs)", legend_title="Method")
-fig_optimized_speed_log.show()
+# fig_optimized_speed_log.show()
 
 
 fig_optimized_memory = px.line(
@@ -75,16 +76,18 @@ fig_optimized_memory = px.line(
     markers=True,
 )
 fig_optimized_memory.update_layout(yaxis_title="Memory (MiB))", legend_title="Method")
-fig_optimized_memory.show()
 
 
-output_dir = Path(__file__).parent / "plots"
-output_dir.mkdir(exist_ok=True)
+# fig_optimized_memory.show()
 
-fig_speed_linear.write_html(output_dir / "fig_compare_speed_linear.html")
-fig_speed_log.write_html(output_dir / "fig_compare_speed_log.html")
-fig_mem_linear.write_html(output_dir / "fig_compare_mem_linear.html")
 
-fig_optimized_speed.write_html(output_dir / "fig_optimized_speed_linear.html")
-fig_optimized_speed_log.write_html(output_dir / "fig_optimized_speed_log.html")
-fig_optimized_memory.write_html(output_dir / "fig_optimized_memory.html")
+# output_dir = Path(__file__).parent / "plots"
+# output_dir.mkdir(exist_ok=True)
+
+# fig_speed_linear.write_html(output_dir / "fig_compare_speed_linear.html")
+# fig_speed_log.write_html(output_dir / "fig_compare_speed_log.html")
+# fig_mem_linear.write_html(output_dir / "fig_compare_mem_linear.html")
+
+# fig_optimized_speed.write_html(output_dir / "fig_optimized_speed_linear.html")
+# fig_optimized_speed_log.write_html(output_dir / "fig_optimized_speed_log.html")
+# fig_optimized_memory.write_html(output_dir / "fig_optimized_memory.html")
