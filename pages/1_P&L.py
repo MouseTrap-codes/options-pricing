@@ -1,6 +1,7 @@
 import streamlit as st
 
 from models import black_scholes_with_greeks, dp_binomial_tree
+from pnl_helpers import display_pnl
 
 st.set_page_config(page_title="Options Pricer", layout="centered")
 st.title("Options Pricer")
@@ -11,8 +12,11 @@ Use this tool to price **European or American** options using either the **Black
 """
 )
 
+# part 1: inputs
 # model selection
 model = st.radio("Pricing Model", ["Black-Scholes", "Binomial Tree"])
+
+allowed_positions = ["long", "short"]
 
 # restrict options for Black-Scholes
 if model == "Black-Scholes":
@@ -23,7 +27,7 @@ else:
     allowed_assets = ["nondividend", "dividend", "currency", "future"]
 
 # shared Inputs
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 with col1:
     S_t = st.number_input("Current Stock Price (S₀)", value=100.0, step=1.0)
     K = st.number_input("Strike Price (K)", value=100.0, step=1.0)
@@ -34,6 +38,14 @@ with col2:
     option_type = st.selectbox("Option Type", ["call", "put"])
     exercise_type = st.selectbox("Exercise Style", allowed_exercise)
     asset_type = st.selectbox("Asset Type", allowed_assets)
+    position_type = st.selectbox("Position Type", allowed_positions)
+with col3:
+    number_of_contracts = st.number_input(
+        "Number of Contracts", min_value=1, value=1, step=1
+    )
+    contract_multiplier = st.number_input(
+        "Contract Multiplier", min_value=1, value=100, step=1
+    )
 
 # additional fields depending on asset type
 q = r_f = None
@@ -50,6 +62,7 @@ if model == "Binomial Tree":
 else:
     N = None
 
+# part 2: compute premium
 # run model
 if st.button("Compute Option Price"):
     try:
@@ -73,6 +86,14 @@ if st.button("Compute Option Price"):
                 st.success(f"Option Price: **{result['Price']:.4f}**")
                 st.subheader("Greeks")
                 st.table({k: [v] for k, v in result.items() if k != "Price"})
+                display_pnl(
+                    option_price=result["Price"],
+                    K=K,
+                    option_type=option_type,
+                    position_type=position_type,
+                    number_of_contracts=number_of_contracts,
+                    contract_multiplier=contract_multiplier,
+                )
         else:
             price = dp_binomial_tree(
                 S_t=S_t,
@@ -88,6 +109,14 @@ if st.button("Compute Option Price"):
                 r_f=r_f,
             )
             st.success(f"Option Price: **{price:.4f}**")
+            display_pnl(
+                option_price=price,
+                K=K,
+                option_type=option_type,
+                position_type=position_type,
+                number_of_contracts=number_of_contracts,
+                contract_multiplier=contract_multiplier,
+            )
 
     except Exception as e:
         st.error(f"Error: {e}")
