@@ -181,3 +181,81 @@ def display_pnl(
         "Max Loss",
         "∞" if not np.isfinite(result["Max Loss"]) else f"{result['Max Loss']:.2f}",
     )
+
+
+def plot_pnl_overlay(
+    spot_range,
+    *,
+    pnl_model,
+    pnl_market=None,
+    K=None,
+    breakeven_model=None,
+    breakeven_market=None,
+):
+    fig = go.Figure()
+
+    # model line
+    fig.add_trace(
+        go.Scatter(
+            x=spot_range,
+            y=pnl_model,
+            mode="lines",
+            name="Model P&L",
+            line=dict(width=2),
+            hovertemplate="Spot: %{x}<br>P&L: %{y}",
+        )
+    )
+
+    # market line (optional)
+    if pnl_market is not None:
+        fig.add_trace(
+            go.Scatter(
+                x=spot_range,
+                y=pnl_market,
+                mode="lines",
+                name="Market P&L",
+                line=dict(width=2, dash="dash"),
+                hovertemplate="Spot: %{x}<br>P&L: %{y}",
+            )
+        )
+
+    # zero line
+    fig.add_hline(y=0, line_dash="dash", opacity=0.6)
+
+    # markers
+    if K is not None:
+        fig.add_vline(
+            x=K,
+            line_dash="dot",
+            annotation_text="Strike",
+            annotation_position="bottom right",
+        )
+    if breakeven_model is not None:
+        fig.add_vline(
+            x=breakeven_model,
+            line_dash="dot",
+            line_color="green",
+            annotation_text="Model BE",
+            annotation_position="top right",
+        )
+    if breakeven_market is not None:
+        fig.add_vline(
+            x=breakeven_market,
+            line_dash="dot",
+            line_color="lightgreen",
+            annotation_text="Market BE",
+            annotation_position="top right",
+        )
+
+    fig.update_layout(
+        title="Profit & Loss vs Spot Price (Overlay)",
+        xaxis_title="Spot Price at Expiration (S)",
+        yaxis_title="Profit / Loss",
+        plot_bgcolor="#262730",
+        paper_bgcolor="#0D1117",
+        font=dict(color="#E6E6E6", family="sans serif"),
+        xaxis=dict(showgrid=True),
+        yaxis=dict(showgrid=True),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+    st.plotly_chart(fig, use_container_width=True)
