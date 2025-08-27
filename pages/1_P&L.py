@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import cast
 
+import numpy as np
 import pandas as pd
 import streamlit as st
 
@@ -183,25 +184,71 @@ if use_live and ticker:
 
                     else:
                         N_int = cast(int, N)
+                        if (N is None) or (T is None) or (T <= 0):
+                            sigma_floor = 1e-4
+                            N_int = 200  # a safe fallback for IV solver callback
+                        else:
+                            N_int = int(N)
+                            dt = T / N_int
+                            # drift b depends on asset type
+                            if asset_type == "currency":
+                                b = r - (r_f or 0.0)
+                            elif asset_type == "future":
+                                b = 0.0
+                            else:
+                                b = r - (q or 0.0)
+                            sigma_floor = max(
+                                1e-4, 1.05 * abs(b) * np.sqrt(dt)
+                            )  # 5% buffer
 
                         def price_of_sigma(sig: float) -> float:
-                            return dp_binomial_tree(
-                                S_t=S_t,
-                                K=K,
-                                T=T,
-                                r=r,
-                                sigma=sig,
-                                option_type=option_type,
-                                exercise_type=exercise_type,
-                                asset_type=asset_type,
-                                N=N_int,
-                                q=q,
-                                r_f=r_f,
-                            )
+                            try:
+                                return dp_binomial_tree(
+                                    S_t=S_t,
+                                    K=K,
+                                    T=T,
+                                    r=r,
+                                    sigma=sig,
+                                    option_type=option_type,
+                                    exercise_type=exercise_type,
+                                    asset_type=asset_type,
+                                    N=N_int,
+                                    q=q,
+                                    r_f=r_f,
+                                )
+                            except Exception:
+                                return np.nan
 
-                    iv_market = implied_volatility(
-                        market_price=market_premium, price_of_sigma=price_of_sigma
-                    )
+                    try:
+                        iv_market = implied_volatility(
+                            market_price=market_premium, price_of_sigma=price_of_sigma
+                        )
+                        if model == "Binomial Tree":
+                            N_int = cast(int, N)
+                            if (N is None) or (T is None) or (T <= 0):
+                                sigma_floor = 1e-4
+                                N_int = 200  # a safe fallback for IV solver callback
+                            else:
+                                N_int = int(N)
+                                dt = T / N_int
+                                # drift b depends on asset type
+                                if asset_type == "currency":
+                                    b = r - (r_f or 0.0)
+                                elif asset_type == "future":
+                                    b = 0.0
+                                else:
+                                    b = r - (q or 0.0)
+                                sigma_floor = max(
+                                    1e-4, 1.05 * abs(b) * np.sqrt(dt)
+                                )  # 5% buffer
+                            iv_market = implied_volatility(
+                                market_price=market_premium,
+                                price_of_sigma=price_of_sigma,
+                                lo=sigma_floor,
+                                lo_floor=sigma_floor,
+                            )
+                    except Exception as e:
+                        st.warning(f"{e}")
 
                     if iv_market is not None:
                         st.caption(
