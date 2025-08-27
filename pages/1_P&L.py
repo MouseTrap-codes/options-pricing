@@ -12,12 +12,13 @@ from option_chain_helpers import (
     _market_premium_for_strike,
     _option_chain,
     _yearfrac,
+    compute_position_greeks,
     implied_volatility,
 )
 from pnl_helpers import display_pnl, display_pnl_overlay
 
-st.set_page_config(page_title="Options Pricer", layout="centered")
-st.title("Options Pricer")
+st.set_page_config(page_title="Options Pricer + P&L", layout="centered")
+st.title("Options Pricer + P&L")
 
 st.markdown(
     """
@@ -325,8 +326,21 @@ if st.button("Compute Option Price"):
 
                     if market_premium is not None:
                         st.info(f"Option Price (Market): **{market_premium:.4f}**")
+
+                        # greeks
+                        option_greeks = {
+                            k: float(v) for k, v, in result.items() if k != "Price"
+                        }
+                        position_greeks = compute_position_greeks(
+                            option_greeks=option_greeks,
+                            position_type=position_type,
+                            number_of_contracts=number_of_contracts,
+                            contract_multiplier=contract_multiplier,
+                        )
                         st.subheader("Option Greeks (Model)")
-                        st.table({k: [v] for k, v in result.items() if k != "Price"})
+                        st.table({k: [v] for k, v in option_greeks.items()})
+                        st.subheader("Position Greeks (Model)")
+                        st.table({k: [v] for k, v in position_greeks.items()})
 
                         # Overlay P&L: model vs market
                         display_pnl_overlay(

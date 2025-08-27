@@ -144,3 +144,14 @@ def implied_volatility(
         return cast(float, (brentq(f, lo, hi, xtol=xtol, maxiter=max_iter)))
     except Exception:
         return None
+
+
+def compute_position_greeks(
+    option_greeks: dict[str, float],
+    position_type,
+    number_of_contracts,
+    contract_multiplier,
+):
+    sign = 1.0 if position_type == "long" else -1.0
+    scale = sign * number_of_contracts * contract_multiplier
+    return {greek: val * scale for greek, val, in option_greeks.items()}
