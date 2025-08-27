@@ -1,11 +1,19 @@
 from datetime import datetime
 from typing import cast
 
+import pandas as pd
 import streamlit as st
 
 from models import black_scholes_with_greeks, dp_binomial_tree
-from option_chain_helpers import _expirations, _last_close, _option_chain, _yearfrac
-from pnl_helpers import display_pnl
+from option_chain_helpers import (
+    _expirations,
+    _last_close,
+    _market_premium_for_strike,
+    _option_chain,
+    _yearfrac,
+    implied_volatility,
+)
+from pnl_helpers import display_pnl, display_pnl_overlay
 
 st.set_page_config(page_title="Options Pricer", layout="centered")
 st.title("Options Pricer")
@@ -80,6 +88,17 @@ if model == "Binomial Tree":
 else:
     N = None
 
+EMPTY_CHAIN_DF: pd.DataFrame = pd.DataFrame(
+    {
+        "strike": pd.Series(dtype="float64"),
+        "bid": pd.Series(dtype="float64"),
+        "ask": pd.Series(dtype="float64"),
+        "lastPrice": pd.Series(dtype="float64"),
+    }
+)
+
+df_chain: pd.DataFrame = EMPTY_CHAIN_DF.copy()
+sigma_eff = float(sigma)
 # live wiring: S₀, expiry->T, and K from chain (ATM default)
 if use_live and ticker:
     try:
@@ -88,12 +107,12 @@ if use_live and ticker:
             expirations = _expirations(ticker)
 
         if expirations:
-            # Metrics row *above* the expiry dropdown
+            # metrics row *above* the expiry dropdown
             m1, m2 = st.columns(2)
             m1.metric("Live S₀", f"{S_t:.2f}")
             t_placeholder = m2.empty()
 
-            # Expiry dropdown
+            # expiry dropdown
             expiry_str = cast(
                 str, st.selectbox("Choose Expiration Date", expirations, index=0)
             )
@@ -101,10 +120,11 @@ if use_live and ticker:
             T = _yearfrac(expiry_date)  # override T
             t_placeholder.metric("T (years)", f"{T:.6f}")
 
-            # Option chain + single K input (selectbox)
+            # option chain + single K input (selectbox)
             with st.spinner("Loading option chain..."):
                 oc = _option_chain(ticker, expiry_str)
             df = oc.calls if option_type == "call" else oc.puts
+            df_chain = df
 
             if df is not None and not df.empty and "strike" in df.columns:
                 strikes = sorted(
@@ -133,6 +153,67 @@ if use_live and ticker:
             st.caption(
                 f"Using live S₀ = {S_t:.2f} • K = {float(K):.2f} • T = {T:.6f} years"
             )
+
+            # precompute market mid and IV
+            market_premium = None
+            iv_market = None
+            use_market_iv = False
+            sigma_eff = float(sigma)
+
+            if use_live and ticker and (df_chain is not None) and not df_chain.empty:
+                try:
+                    market_premium = _market_premium_for_strike(df=df_chain, K=K)
+                except Exception as e:
+                    st.warning(f"Could not get market premium for K={K}: {e}")
+
+                if market_premium is not None:
+                    # precompute with correct model
+                    if model == "Black-Scholes":
+
+                        def price_of_sigma(sig: float) -> float:
+                            return black_scholes_with_greeks(
+                                S_t=S_t,
+                                K=K,
+                                T=T,
+                                r=r,
+                                sigma=sig,
+                                q=(q or 0.0),
+                                option_type=option_type,
+                            )["Price"]
+
+                    else:
+                        N_int = cast(int, N)
+
+                        def price_of_sigma(sig: float) -> float:
+                            return dp_binomial_tree(
+                                S_t=S_t,
+                                K=K,
+                                T=T,
+                                r=r,
+                                sigma=sig,
+                                option_type=option_type,
+                                exercise_type=exercise_type,
+                                asset_type=asset_type,
+                                N=N_int,
+                                q=q,
+                                r_f=r_f,
+                            )
+
+                    iv_market = implied_volatility(
+                        market_price=market_premium, price_of_sigma=price_of_sigma
+                    )
+
+                    if iv_market is not None:
+                        st.caption(
+                            f"Market IV ~ {iv_market*100:.2f}% from mid {market_premium:.4f}"
+                        )
+                        use_market_iv = st.checkbox(
+                            "Use Market Implied Volatility", value=True
+                        )
+                        if use_market_iv:
+                            sigma_eff = float(iv_market)
+                    else:
+                        st.warning("Could not solve implied volatility")
         else:
             st.warning("No expirations found; using manual inputs.")
     except Exception as e:
@@ -160,19 +241,73 @@ if st.button("Compute Option Price"):
                     q=q or 0.0,
                     option_type=option_type,
                 )
-                st.success(f"Option Price: **{result['Price']:.4f}**")
-                st.subheader("Greeks")
-                st.table({k: [v] for k, v in result.items() if k != "Price"})
-                display_pnl(
-                    option_price=result["Price"],
-                    K=K,
-                    option_type=option_type,
-                    position_type=position_type,
-                    number_of_contracts=number_of_contracts,
-                    contract_multiplier=contract_multiplier,
-                )
+                if not use_live:
+                    st.success(f"Option Price: **{result['Price']:.4f}**")
+                    st.subheader("Option Greeks")
+                    st.table({k: [v] for k, v in result.items() if k != "Price"})
+                    display_pnl(
+                        option_price=result["Price"],
+                        K=K,
+                        option_type=option_type,
+                        position_type=position_type,
+                        number_of_contracts=number_of_contracts,
+                        contract_multiplier=contract_multiplier,
+                    )
+                elif use_live and ticker:
+                    market_premium = None
+                    try:
+                        if df_chain is not None:
+                            market_premium = _market_premium_for_strike(
+                                df=df_chain, K=K
+                            )
+                    except Exception as e:
+                        st.warning(f"Could not get market premium for K={K}: {e}")
+
+                    # recompute model result with the effective sigma
+                    result = black_scholes_with_greeks(
+                        S_t=S_t,
+                        K=K,
+                        T=T,
+                        r=r,
+                        sigma=sigma_eff,
+                        q=q or 0.0,
+                        option_type=option_type,
+                    )
+
+                    st.success(f"Option Price (Model): **{result['Price']:.4f}**")
+
+                    if market_premium is not None:
+                        st.info(f"Option Price (Market): **{market_premium:.4f}**")
+                        st.subheader("Option Greeks (Model)")
+                        st.table({k: [v] for k, v in result.items() if k != "Price"})
+
+                        # Overlay P&L: model vs market
+                        display_pnl_overlay(
+                            option_price_model=result["Price"],
+                            option_price_market=market_premium,
+                            K=K,
+                            option_type=option_type,
+                            position_type=position_type,
+                            number_of_contracts=number_of_contracts,
+                            contract_multiplier=contract_multiplier,
+                        )
+                    else:
+                        st.warning(
+                            "No market premium found for this strike (off-grid or missing quotes)."
+                        )
+                        st.subheader("Greeks")
+                        st.table({k: [v] for k, v in result.items() if k != "Price"})
+                        display_pnl(
+                            option_price=result["Price"],
+                            K=K,
+                            option_type=option_type,
+                            position_type=position_type,
+                            number_of_contracts=number_of_contracts,
+                            contract_multiplier=contract_multiplier,
+                        )
         else:
             K = float(K) if K is not None else 100.0  # fallback default
+            N_int = cast(int, N)
             price = dp_binomial_tree(
                 S_t=S_t,
                 K=K,
@@ -182,19 +317,68 @@ if st.button("Compute Option Price"):
                 option_type=option_type,
                 exercise_type=exercise_type,
                 asset_type=asset_type,
-                N=N,  # type: ignore
+                N=N_int,
                 q=q,
                 r_f=r_f,
             )
-            st.success(f"Option Price: **{price:.4f}**")
-            display_pnl(
-                option_price=price,
-                K=K,
-                option_type=option_type,
-                position_type=position_type,
-                number_of_contracts=number_of_contracts,
-                contract_multiplier=contract_multiplier,
-            )
+            if not use_live:
+                st.success(f"Option Price: **{price:.4f}**")
+                display_pnl(
+                    option_price=price,
+                    K=K,
+                    option_type=option_type,
+                    position_type=position_type,
+                    number_of_contracts=number_of_contracts,
+                    contract_multiplier=contract_multiplier,
+                )
+            elif use_live and ticker:
+                market_premium = None
+                try:
+                    if df_chain is not None:
+                        market_premium = _market_premium_for_strike(df=df_chain, K=K)
+                except Exception as e:
+                    st.warning(f"Could not get market premium for K={K}: {e}")
+
+                # recompute model result with the effective sigma
+                price = dp_binomial_tree(
+                    S_t=S_t,
+                    K=K,
+                    T=T,
+                    r=r,
+                    sigma=sigma_eff,
+                    option_type=option_type,
+                    exercise_type=exercise_type,
+                    asset_type=asset_type,
+                    N=N_int,
+                    q=q,
+                    r_f=r_f,
+                )
+                st.success(f"Option Price (Model): **{price:.4f}**")
+
+                if market_premium is not None:
+                    st.info(f"Option Price (Market): **{market_premium:.4f}**")
+                    # overlay P&L: model vs market
+                    display_pnl_overlay(
+                        option_price_model=price,
+                        option_price_market=market_premium,
+                        K=K,
+                        option_type=option_type,
+                        position_type=position_type,
+                        number_of_contracts=number_of_contracts,
+                        contract_multiplier=contract_multiplier,
+                    )
+            else:
+                st.warning(
+                    "No market premium found for this strike (off-grid or missing quotes)."
+                )
+                display_pnl(
+                    option_price=price,
+                    K=K,
+                    option_type=option_type,
+                    position_type=position_type,
+                    number_of_contracts=number_of_contracts,
+                    contract_multiplier=contract_multiplier,
+                )
 
     except Exception as e:
         st.error(f"Error: {e}")

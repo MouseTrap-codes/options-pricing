@@ -1,9 +1,11 @@
 from datetime import datetime
+from typing import Callable, Optional, cast
 
 import numpy as np
 import pandas as pd
 import streamlit as st
 import yfinance as yf
+from scipy.optimize import brentq
 
 SECONDS_PER_YEAR = 365.25 * 24 * 3600.0
 
@@ -86,3 +88,59 @@ def _market_premium_for_strike(df: pd.DataFrame, K: float, *, tol: float | None 
         return last
 
     return None
+
+
+def implied_volatility(
+    market_price: float,
+    price_of_sigma: Callable[[float], float],
+    *,
+    lo: float = 1e-4,
+    hi: float = 5.0,
+    xtol: float = 1e-10,
+    max_iter: int = 200,
+    expand_factor: float = 1.5,
+    shrink_factor: float = 0.5,
+    max_expands: int = 12,
+    lo_floor: float = 1e-8,
+    hi_cap: float = 10.0
+) -> Optional[float]:
+    if market_price is None or not np.isfinite(market_price) or market_price <= 0:
+        return None
+
+    def f(sig: float) -> float:
+        return price_of_sigma(sig) - market_price
+
+    f_lo = f(lo)
+    f_hi = f(hi)
+
+    # expand upper bound if price at hi is above market (f_hi < 0)
+    expands = 0
+    while (
+        np.isfinite(f_hi) and (f_hi < 0.0) and (hi < hi_cap) and (expands < max_expands)
+    ):
+        hi *= expand_factor
+        f_hi = f(hi)
+        expands += 1
+
+    # contract lower bound if price at lo is already above market (f_lo > 0)
+    shrinks = 0
+    while (
+        np.isfinite(f_lo)
+        and (f_lo > 0.0)
+        and (lo > lo_floor)
+        and (shrinks < max_expands)
+    ):
+        lo *= shrink_factor
+        f_lo = f(lo)
+        shrinks += 1
+
+    # require sign change for brentq
+    if not (
+        np.isfinite(f_lo) and np.isfinite(f_hi) and (np.sign(f_lo) != np.sign(f_hi))
+    ):
+        return None
+
+    try:
+        return cast(float, (brentq(f, lo, hi, xtol=xtol, maxiter=max_iter)))
+    except Exception:
+        return None
