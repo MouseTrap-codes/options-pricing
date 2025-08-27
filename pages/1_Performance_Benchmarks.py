@@ -9,7 +9,12 @@ from benchmarks.make_plots import (
     fig_speed_log,
 )
 
-st.title("Benchmark Results")
+st.title("Binomial Tree Performance Benchmarks")
+st.markdown(
+    """
+Two implementations were made for the Binomial Tree options pricer: a recursive one based on binary trees, and an optimized one using dynamic programming in conjunction with XLA compilation with JAX.
+"""
+)
 
 st.subheader("Execution Time vs N")
 st.plotly_chart(fig_speed_linear, use_container_width=True)

@@ -22,7 +22,7 @@ st.title("Options Pricer + P&L")
 
 st.markdown(
     """
-Use this tool to price **European or American** options using either the **Black-Scholes model** (European only) or a **Binomial Tree model** (supports multiple asset types and exercise styles).
+Use this tool to price **European or American** options using either the **Black-Scholes model** (European only & nondividend/divdend only) or a **Binomial Tree model** (supports multiple asset types i.e. currency and exercise styles i.e. American).
 """
 )
 
