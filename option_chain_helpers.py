@@ -102,7 +102,7 @@ def implied_volatility(
     shrink_factor: float = 0.5,
     max_expands: int = 12,
     lo_floor: float = 1e-8,
-    hi_cap: float = 10.0
+    hi_cap: float = 10.0,
 ) -> Optional[float]:
     if market_price is None or not np.isfinite(market_price) or market_price <= 0:
         return None
