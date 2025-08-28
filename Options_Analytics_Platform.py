@@ -271,19 +271,16 @@ if use_live and ticker:
 # part 2: compute premium
 if T <= 0:
     st.error("Time to maturity must be positive")
-    st.stop()
 
 if sigma_eff < 0:  # Use sigma_eff since it's the effective volatility being used
-    st.error("Volatility cannot be negative")
-    st.stop()
+    st.warning("Volatility cannot be negative")
 
 if S_t <= 0:
-    st.error("Stock price must be positive")
-    st.stop()
+    st.warning("Stock price must be positive")
 
 if K <= 0:
-    st.error("Strike price must be positive")
-    st.stop()
+    st.warning("Strike price must be positive")
+
 # run model
 if st.button("Compute Option Price"):
     try:
@@ -386,7 +383,7 @@ if st.button("Compute Option Price"):
             K = float(K) if K is not None else 100.0  # fallback default
             N_int = cast(int, N)
             if sigma == 0.0:
-                st.error("σ > 0 for the Binomial Tree model.")
+                st.warning("Please enter σ > 0 for the Binomial Tree model.")
                 st.stop()
             price = dp_binomial_tree(
                 S_t=S_t,
