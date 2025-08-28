@@ -59,7 +59,7 @@ with col1:
         "Time to Maturity (T, years)", value=1.0, step=0.1, disabled=use_live
     )
     r = st.number_input("Risk-Free Rate (r)", value=0.05, step=0.01)
-    sigma = st.number_input("Volatility (σ)", value=0.2, step=0.01)
+    sigma = st.number_input("Volatility (σ)", min_value=0.00, value=0.2, step=0.01)
 
 with col2:
     option_type = st.selectbox("Option Type", ["call", "put"])
@@ -269,6 +269,21 @@ if use_live and ticker:
         st.error(f"Error fetching data for {ticker}: {e}")
 
 # part 2: compute premium
+if T <= 0:
+    st.error("Time to maturity must be positive")
+    st.stop()
+
+if sigma_eff < 0:  # Use sigma_eff since it's the effective volatility being used
+    st.error("Volatility cannot be negative")
+    st.stop()
+
+if S_t <= 0:
+    st.error("Stock price must be positive")
+    st.stop()
+
+if K <= 0:
+    st.error("Strike price must be positive")
+    st.stop()
 # run model
 if st.button("Compute Option Price"):
     try:
@@ -370,6 +385,9 @@ if st.button("Compute Option Price"):
         else:
             K = float(K) if K is not None else 100.0  # fallback default
             N_int = cast(int, N)
+            if sigma == 0.0:
+                st.error("σ > 0 for the Binomial Tree model.")
+                st.stop()
             price = dp_binomial_tree(
                 S_t=S_t,
                 K=K,
