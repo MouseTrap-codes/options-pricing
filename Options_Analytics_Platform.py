@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import cast
+from typing import Optional, cast
 
 import numpy as np
 import pandas as pd
@@ -83,6 +83,7 @@ elif asset_type == "currency":
     r_f = st.number_input("Foreign Interest Rate (r_f)", value=0.01, step=0.005)
 
 # bt-specific inputs
+N: Optional[int] = None
 if model == "Binomial Tree":
     N = st.slider(
         "Number of Time Steps (N)", min_value=10, max_value=1000, value=200, step=10
