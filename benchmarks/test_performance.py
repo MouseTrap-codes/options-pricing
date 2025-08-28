@@ -3,9 +3,9 @@ import logging
 from pathlib import Path
 from typing import Literal, TypedDict
 
-from benchmark_utils import bench_time, peak_delta_rss_mib
-
 from models import dp_binomial_tree, recursive_binomial_tree
+
+from .benchmark_utils import bench_time, peak_delta_rss_mib
 
 CSV_FILE = Path("benchmarks/results.csv")
 
